@@ -56,7 +56,7 @@ public class TrafficCounter  {
 	 * If sach person exist he will modify his information
 	 * @see IpPerson
 	 */
-	public void addPersone(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,int speed,String lastDate){
+	public  void  addPersone(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,int speed,String lastDate){
 		lock.lock();try{
 		if(listOfPerson.size() == 0){
 			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate)); 

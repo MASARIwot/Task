@@ -43,10 +43,11 @@ public class TestServer {
 			testRedirect = new TestThread_Redirect(redirect[i]);
 			testRedirect.start();
 		}
-		
 		testHello.join();
 		testRedirect.join();
-		float stopTime = (int) System.currentTimeMillis() - startTime;
+				
+		float stopTime =  System.currentTimeMillis() - startTime;
+		
 		System.out.print(stopTime);
 	}
 	

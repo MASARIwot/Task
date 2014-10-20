@@ -94,8 +94,10 @@ public class IpPerson {
 			}else
 			if(this.allUri.containsKey(uri)){
 				int iw = 1;
-				iw += this.allUri.get(uri);
+				iw = this.allUri.get(uri);
+				iw++;
 				this.allUri.put(uri,iw);
+				iw = 0;
 				
 			}
 	   }
