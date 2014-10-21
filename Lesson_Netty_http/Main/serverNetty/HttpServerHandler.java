@@ -19,7 +19,7 @@ import static io.netty.handler.codec.http.HttpVersion.*;//HTTP_1_1
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;//LOCATION
 /**
  * this if main Handler
- * @author Ñàíÿ
+ * @author Ã‘Ã Ã­Ã¿
  */
 public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleChannelInboundHandler<FullHttpRequest>{*/
 	TrafficCounter traficCoute = TrafficCounter.getInstance();
@@ -102,7 +102,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
       			status(ctx);
       		}/*if /status*/ 
       		if(urlIn.startsWith("/redirect?url=")){
-      			String[] parts = urlIn.split("=");
+      			String[] parts = urlIn.split("?url=");
       			String part2 = parts[1]; // =<url>
       			this.url = part2;
       			/*ADD url*/
