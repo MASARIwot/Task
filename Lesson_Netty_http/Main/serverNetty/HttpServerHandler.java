@@ -99,12 +99,8 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
       		
       		}/*if /status*/ 
       		if(urlIn.startsWith("/redirect?url=")){
-<<<<<<< HEAD
       			String[] parts = urlIn.split("url=");
-=======
-      			String[] parts = urlIn.split("?url=");
->>>>>>> origin/master
-      			String part2 = parts[1]; // =<url>
+    			String part2 = parts[1]; // =<url>
       			this.url = part2;
       			/*ADD url*/
       			//System.out.println("Redirect url:" + this.url);
