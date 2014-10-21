@@ -1,7 +1,10 @@
 package statusLogic;
 
+import java.io.Console;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
 import box.IpPerson;
 import box.TrafficCounter;
 /**
@@ -35,9 +38,9 @@ public class Status {
 		int activeConnection = traficCoute.getEctivConnect();
 		int allReqvest = traficCoute.getNamberOfCounnect();
 		int equlReqvest = traficCoute.getNamberOfEqualCounnect();
-		bufHtml.append(  "<h3>Количество  соединений, открытых в данный момент : "+activeConnection+"</h3>\r\n"	);
-		bufHtml.append(  "<h3>Oбщее количество запросов : "+allReqvest+"</h3>\r\n"	);
-		bufHtml.append(  "<h3>Kоличество уникальных запросов  : "+equlReqvest+"</h3>\r\n"	);
+		bufHtml.append(  "<h3>The number of connections currently open : "+activeConnection+"</h3>\r\n"	);
+		bufHtml.append(  "<h3>Total number of requests : "+allReqvest+"</h3>\r\n"	);
+		bufHtml.append(  "<h3>The number of unique queries  : "+equlReqvest+"</h3>\r\n"	);
 		return null;
 	}
 	/**
@@ -57,11 +60,11 @@ public class Status {
 		/*Counter of redirection
 		 * head tabel
 		 * */
-		bufHtml.append(  "<h3>Количество переадресаций по url'ам</h3>\r\n"	);
+		bufHtml.append(  "<h3>Number of redirects to url'ам</h3>\r\n"	);
 		bufHtml.append(  "<table class=brd border=1>\r\n"		);
 		bufHtml.append(  "<tr>\r\n" 							);
 		
-		bufHtml.append(  "<th>кол-во переадресаций</th>\r\n"	);
+		bufHtml.append(  "<th>Number of redirects</th>\r\n"	);
 		bufHtml.append(  "<th>URL</th>\r\n"						);
 		
 		bufHtml.append(  "</tr>\r\n"							);
@@ -85,13 +88,13 @@ public class Status {
 	    
 	    /*Reqvest counter for each IP
 		 * */
-	    bufHtml.append(  "<h3>Cчетчик запросов на каждый IP</h3>\r\n");
+	    bufHtml.append(  "<h3>Counter requests for each IP</h3>\r\n");
 		bufHtml.append(  "<table class=brd border=1>\r\n"		);
 		bufHtml.append(  "<tr>\r\n"								);
 		
 		bufHtml.append(  "<th>IP</th>\r\n"						);
-		bufHtml.append(  "<th>кол-во запросов</th>\r\n"			);
-		bufHtml.append(  "<th>время последнего запроса</th>\r\n");
+		bufHtml.append(  "<th>number of requests</th>\r\n"			);
+		bufHtml.append(  "<th>the last request time</th>\r\n");
 		
 		bufHtml.append(  "</tr>\r\n"							);
 		/*Info in tabel
@@ -114,7 +117,7 @@ public class Status {
 		 
 		 /* 16 last Reqvest 
 			 * */
-		bufHtml.append(  "<h3>16 последних обработанных соединений</h3>\r\n"	);
+		bufHtml.append(  "<h3>16 Last processed connections</h3>\r\n"	);
 		bufHtml.append(  "<table class=brd  border=1>\r\n"		);
 		bufHtml.append(  "<tr>\r\n"								);
 		
@@ -128,7 +131,8 @@ public class Status {
 		bufHtml.append(  "</tr>\r\n"							);
 		/*Info in tabel
 		* */
-		listOfPerson = traficCoute.getListOfPerson();
+		listOfPerson = (traficCoute.getListOfPerson());
+		Collections.reverse(listOfPerson);
 		int i = 0;
 		for(IpPerson persone: listOfPerson){
 			
@@ -153,7 +157,7 @@ public class Status {
 		}/*for(IpPerson persone: listOfPerson){*/
 		/*Close Tabel: 16 last Reqvest*/ 
 		bufHtml.append(  "</table>\r\n"	); 
-		 
+		
 		return null;
 	}
 	/**
@@ -164,8 +168,51 @@ public class Status {
 		getHead();
 		format();
 		getTail();
+		
 				
 		return bufHtml;
 	}
+	
+	@SuppressWarnings("unused")
+	private void printInConsole(){
+		/**/
+		Console cnsl = System.console();
+	      
+	         
+			if(cnsl != null){
+	         
+	            String fmt = "%1$10s %2$10s %3$10s%n";
+	            int activeConnection = traficCoute.getEctivConnect();
+	    		int allReqvest = traficCoute.getNamberOfCounnect();
+	    		int equlReqvest = traficCoute.getNamberOfEqualCounnect();
+	            // format
+	            cnsl.printf(fmt, "activeConnection", "allReqvest", "equlReqvest");
+	            cnsl.printf(fmt, "-----", "-----", "-----");
+	            cnsl.printf(fmt, activeConnection, allReqvest, equlReqvest);
+	            
+	            
+	            String fmt2 = "%1$20s %2$25s %3$10s% %4$10s %5$10s %6$10s%sn";
+	            cnsl.printf(fmt2, "scr_Ip", "URL", "timestamp", "sent_bytes", "received_bytes","speed");
+	            cnsl.printf(fmt2, "-----", "-----", "-----","-----", "-----", "-----");
+	            listOfPerson = traficCoute.getListOfPerson();
+	    		int i = 0;
+	    		for(IpPerson persone: listOfPerson){
+	    			
+	    			String scr_Ip = persone.getScr_IP();
+	    			String URL = persone.getLastUri();
+	    			String timestamp = persone.getLastDate();
+	    			int sent_bytes = persone.getSent_bytes();
+	    			int received_bytes = persone.getIntreceived_bytes();
+	    			double speed = persone.getSpeed();
+	            	cnsl.printf(fmt2, scr_Ip, URL, timestamp,sent_bytes,received_bytes,received_bytes,speed);
+	    			if(i == 16) break;
+	    			i++;
+	            	           
+	    			}  
+	      
+	         }
+	    }
+	
+	
 
 }

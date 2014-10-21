@@ -34,14 +34,14 @@ public class HttpServerInit extends ChannelInitializer<SocketChannel>{
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
         if (sslCtx != null) {
-         //   pipeline.addLast(sslCtx.newHandler(ch.alloc()));
+        //pipeline.addLast(sslCtx.newHandler(ch.alloc()));
         }
-       // p.addLast(new SslHandler());
+        //p.addLast(new SslHandler());
         pipeline.addLast(new HttpRequestDecoder());
 	    pipeline.addLast(new HttpResponseEncoder());
-         //pipeline.addLast(new HttpResponseEncoder());
-          pipeline.addLast(new HttpServerHandler());
-         //pipeline.addLast(new *other*Handler());
+        //pipeline.addLast(new HttpResponseEncoder());
+        pipeline.addLast(new HttpServerHandler());
+        //pipeline.addLast(new *other*Handler());
 		
 	}
 

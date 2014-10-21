@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+@SuppressWarnings("unused")
 public class TestThread_Redirect extends Thread {
 	private String str;
 	private StringBuilder strigFromURL = null;
@@ -17,7 +17,7 @@ public class TestThread_Redirect extends Thread {
 	
 	@Override
 	public void run() {
-		for(int i = 0; i < 100; i++){
+		for(int i = 0; i < 10; i++){
 		try(BufferedReader  buff  = 
 				new BufferedReader(
 						new InputStreamReader(

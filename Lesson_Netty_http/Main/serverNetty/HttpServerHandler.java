@@ -55,12 +55,12 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
     	  this.lastWriteTime = System.currentTimeMillis();
     	  calculateSpeed();
     	  /*ADD persone in new Tread*/
-    	  if(!"def".equals(this.scr_IP)){
-    	  addIfo = new AddPersoneThread(this.scr_IP, this.url, this.sent_bytes, this.intreceived_bytes, this.speed, this.lastDate);
-    	  addIfo.start();  
-    	 }
-    	 // addIDPersone();
-    	  
+    	 
+		    	  if(!"def".equals(this.scr_IP)){
+		    	  addIfo = new AddPersoneThread(this.scr_IP, this.url, this.sent_bytes, this.intreceived_bytes, this.speed, this.lastDate);
+		    	  addIfo.start();  
+		    	 }
+    	 
           ctx.flush();
       }/*channelReadComplete*/
       
@@ -69,15 +69,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
     	  		/*ADD Current Time*/
     	        this.currentTime = System.currentTimeMillis();
     	        traficCoute.Addconnect();
-    	       
-                /*Add DATE*/
+    	        /*Add DATE*/
                 this.lastDate = ((new Date()).toString());
                 /*Add src_IP*/
                 this.scr_IP = (ctx.channel().localAddress().toString());
                 String[] parts = this.scr_IP.split(":");
                 this.scr_IP = parts[0]; // =<url>
-                
-                //System.out.println("Server Connected to: " + scr_IP +" Data: " + lastDate);
+              
       }/*channelActive*/
   
       @Override
@@ -85,32 +83,33 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
     	  	     	 
     	  if (msg instanceof HttpRequest) {
               HttpRequest req = (HttpRequest) msg;
-            /*ADD intreceived_bytes // byte[] ololo1 =  msg.toString().getBytes();*/  
+            /*ADD intreceived_bytes*/  
         	this.intreceived_bytes += (msg.toString().getBytes()).length;
-        	//System.out.println("intreceived_bytes: "+intreceived_bytes);
-        	      	 
+        	 	 
             /*getUri()::http://127.0.0.1:8085/String
              * we will grt /String
              */
         	String urlIn = req.getUri();
-     		//System.out.println(urlIn); 
-  		         		 
+     		  		         		 
       		if("/hello".equals(urlIn)){
       			printhelloWorld(ctx);
       		}/*if /hello*/ 
       		if("/status".equals(urlIn)){
       			status(ctx);
+      		
       		}/*if /status*/ 
       		if(urlIn.startsWith("/redirect?url=")){
-      			String[] parts = urlIn.split("=");
+      			String[] parts = urlIn.split("url=");
       			String part2 = parts[1]; // =<url>
       			this.url = part2;
       			/*ADD url*/
       			//System.out.println("Redirect url:" + this.url);
       			sendRedirect(ctx,part2);
       		}/*if /redirect?url=*/
-      		
-      		
+      		else {
+    			standartReqvest(ctx);
+    			}/*else*/
+      		      		
       	  }/*if (msg instanceof HttpRequest) {*/
     	  else {
     			standartReqvest(ctx);
@@ -121,14 +120,11 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
 	        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, FOUND);
 	        response.headers().set(LOCATION, newUri);
 	        calculateSentBytes(response);
-	       
-           /*http://127.0.0.1:8085/redirect?url=http://stopgame.ru/
+	        /*
             * Close the connection as soon as the error message is sent.
             * */
 			ctx.write(response).addListener(ChannelFutureListener.CLOSE);
-	        
-	       
-	    }/*sendRedirect*/
+	  	}/*sendRedirect*/
   
       private void printhelloWorld(ChannelHandlerContext ctx){
     	  
@@ -145,11 +141,8 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
 	        ByteBuf buffer = Unpooled.copiedBuffer(buf, CharsetUtil.UTF_8);
 	        response.content().writeBytes(buffer);
 	        buffer.release();
-	        
+	        /*ADD sent_bytes*/
 	        calculateSentBytes(response);
-	        /*ADD sent_bytes
-	        this.sent_bytes += response.content().writerIndex();
-	        System.out.println("sent_bytes Of Redirect:" + this.sent_bytes);*/
 	        /*Close the connection as soon as the error message is sent.*/
 	        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);  
     	  
@@ -180,9 +173,6 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
 			 response.headers().set(CONTENT_TYPE, "text/html; charset=UTF-8");
 		     StringBuilder buf = new StringBuilder();
 		     buf = (new Status().getStatus());
-		    
-		     //System.out.println("sent_bytes Of Redirect:" + this.sent_bytes);
-		      
 		     ByteBuf buffer = Unpooled.copiedBuffer(buf, CharsetUtil.UTF_8);
 		     response.content().writeBytes(buffer);
 		     buffer.release();
@@ -190,10 +180,8 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
 		     ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
 		}/*status*/
 
-
-
-      @Override
-      public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+     @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
           cause.printStackTrace();
           ctx.close();
       }/*exceptionCaught*/

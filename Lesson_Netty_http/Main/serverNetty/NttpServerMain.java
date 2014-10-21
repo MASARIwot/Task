@@ -18,32 +18,30 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class NttpServerMain {
 	/*ServerBootstrap::
-	 * это вспомогательный класс для инициализации сервера. 
-	 * Можно и без него, но прийдется много кода писать
+	 * a helper class to initialize the server. 
 	 * */
 	private ServerBootstrap serverBoot = null;
 	/*NioEventLoopGroup:: 
-	 * является многопоточной цикл событий, 
-	 * который обрабатывает операции ввода / вывода. 
+	 *is a multi-threaded event loop, 
+ 	 which handles I / O operations.
 	 * */
 	/*bossGroup::  
-	 * принимает входящие соединения. 
+	 * accepts incoming connections. 
 	 * */
 	private EventLoopGroup bossGroup = null;
 	/* workerGroup::   
-	 * обрабатывает 
-	 * трафик от принятого соединения bossGroup принимает 
-	 * соединение и регистрирует принятыe подключение к рабочему.
+	* processes traffic from the accepted connection bossGroup takes 
+	* Connect and register connection to the worker.
 	 * */
 	private EventLoopGroup workerGroup = null;
 	/*ChannelFuture::  
-	 * Результат асинхронной операции Канал ввода / вывода.
-	 *Все операции ввода / вывода в Netty являются асинхронными. 
-	 *Это означает любые вызовы ввода / вывода будут возвращают 
-	 *значения немедленно без гарантии, что запрошенная операция 
-	 *ввода / вывода была завершена в конце вызова. Вместо этого будет 
-	 *выполнен возврат с экземпляром ChannelFutureкоторый дает вам информацию
-	 * о результате или статусе операции ввода / вывода.
+	 * The result of the asynchronous operation I / O channel. 
+	 * All I / O operations are asynchronous in Netty. 
+	 * This means any calls to the I / O will be returned 
+	 * value immediately with no guarantee that the requested operation 
+	 * I / O operation has been completed at the end of the call. Instead, it will 
+	 * are returned with a copy of ChannelFuturekotory gives you information 
+	 * About the outcome or status of I / O operations. 
 	 * */
 	ChannelFuture channelsFuture = null;
 	private TestTreadForServer testThred = null;
@@ -61,8 +59,8 @@ public class NttpServerMain {
 		serverBoot.group(bossGroup, workerGroup)
 				  .channel(NioServerSocketChannel.class) 
 				  /*NioServerSocketChannel
-				   используется для создания экземпляра нового канала,
-				   чтобы принимать входящие соединения
+				   is used to create an instance of the new channel, 
+						to accept incoming connections
 				   */
 				  .childHandler(new HttpServerInit()/*new ChannelInitializer<SocketChannel>() { // (4)
 		                 @Override
@@ -70,11 +68,11 @@ public class NttpServerMain {
 		                     ch.pipeline().addLast(new HttpServerInit());
 		                 }
 		             }*/);
-		/*Привязка и начать принимать входящие соединения.
-		 * Здесь мы связываемся с портом 8085( int PORT) всех NICs (сетевые карты) в машине.
-		 *  Теперь вы можете вызвать метод Bind () столько раз, сколько вы хотите 
-		 *  (с разным адресам связывания.)
-		 * */
+		/*Bind and start to accept incoming connections. 
+			Here we connect with the port 8085 (int PORT) all NICs (network cards) for a PC. 
+			Now you can call the Bind () as many times as you want 
+			(with different addresses binding.)
+		 */
 		 
 		channelsFuture = serverBoot.bind(PORT).sync();
 		testThred = new TestTreadForServer(channelsFuture);

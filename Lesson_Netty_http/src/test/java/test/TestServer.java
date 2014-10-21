@@ -8,13 +8,15 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.junit.Ignore;
 import org.junit.Test;
-
+@SuppressWarnings("unused")
 public class TestServer {
 	private StringBuilder strigFromURL = null;
 	private String readString = null;
     private String urlHello =  "http://127.0.0.1:8085/hello";
-    @SuppressWarnings("unused")
+ 
+	
 	private String urlstatus =  "http://127.0.0.1:8085/status";
     private String[] redirect = {
     		"http://127.0.0.1:8085/redirect?url=http://stopgame.ru/",
@@ -27,23 +29,33 @@ public class TestServer {
     		"http://127.0.0.1:8085/redirect?url=http://facebook.com/"};
 	
     
-	
+    @Ignore
+    @Test
+	public void test2() {
+    	
+    	
+    }
+      
 	@Test
 	public void test() throws InterruptedException {
 		float startTime =  System.currentTimeMillis();
 		
 		TestThread_Hello testHello = null;
+		
 		TestThread_Redirect testRedirect = null;
 		
-		for(int i = 0; i < 10; i++ ){
-		testHello = new TestThread_Hello(urlHello);
-		testHello.start();	
-		}
 		for(int i = 0; i < redirect.length; i++ ){
 			testRedirect = new TestThread_Redirect(redirect[i]);
 			testRedirect.start();
 		}
-		testHello.join();
+		
+		for(int i = 0; i < 1000; i++ ){
+		//testHello = new TestThread_Hello(urlHello);
+		//testHello.start();
+		connect(urlHello);
+		}
+				
+		
 		testRedirect.join();
 				
 		float stopTime =  System.currentTimeMillis() - startTime;
@@ -52,7 +64,6 @@ public class TestServer {
 	}
 	
 	
-	@SuppressWarnings("unused")
 	private void connect(String url){
     	
     	try(BufferedReader  buff  = 

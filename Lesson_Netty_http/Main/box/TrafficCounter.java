@@ -65,18 +65,18 @@ public class TrafficCounter  {
 			}
 		for(int i = 0; i < listOfPerson.size(); i++ ){
 			if( !(listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
+			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate));	
 			addEqualCounter();
 			addCount();
-			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate));	
+			
 			}else if( (listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
-				addCount();
 				listOfPerson.get(i).setIntreceived_bytes(intreceived_bytes);
 				listOfPerson.get(i).setLastDate(lastDate);
 				listOfPerson.get(i).setLastUri(uri);
 				listOfPerson.get(i).setReqvestCounter();
 				listOfPerson.get(i).setSent_bytes(sent_bytes);
 				listOfPerson.get(i).setSpeed(speed);
-						
+				addCount();		
 			}/*else*/
 		}/*For*/
 	// System.out.println(listOfPerson.toString());
@@ -120,7 +120,7 @@ public class TrafficCounter  {
 	 * @return the namber of connection 
 	 */
 	public int getNamberOfCounnect() {
-		lock.lock();try{return reqvestCounter/2;
+		lock.lock();try{return reqvestCounter;
 		}finally{lock.unlock();}
 	}
 	/**
@@ -133,7 +133,7 @@ public class TrafficCounter  {
 	/**
 	 * @param add connection
 	 */
-	public void addCount() {
+	private void addCount() {
 		lock.lock();try{this.reqvestCounter +=1;
 		}finally{lock.unlock();}
 	}

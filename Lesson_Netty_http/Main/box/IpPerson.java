@@ -118,7 +118,7 @@ public class IpPerson {
 	 * @return the reqvestCounter
 	 */
 	public int getReqvestCounter() {
-		return reqvestCounter/2;
+		return reqvestCounter;
 	}
 
 	/**
@@ -199,8 +199,9 @@ public class IpPerson {
 	 */
 	public void setSpeed(double speed) {
 		if(speed != 0){
+			if(speed != 9){
 		this.speed = speed;
-		}
+		}}
 	}
 	/**
 	 * @return the uriRedirection
