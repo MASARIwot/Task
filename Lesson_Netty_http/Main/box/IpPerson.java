@@ -47,7 +47,7 @@ public class IpPerson {
 	 * @param intreceived_bytes
 	 * @param speed
 	 */
-	public  IpPerson(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,int speed,String lastDate){
+	public  IpPerson(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,double speed,String lastDate){
 		this.allUri = new HashMap<String ,Integer>();
 		this.allDateOfReqvest = new ArrayList<String>();
 		this.scr_IP = scr_IP;

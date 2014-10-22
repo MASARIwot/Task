@@ -1,6 +1,6 @@
 package statusLogic;
 
-import java.io.Console;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Status {
 	private HashMap<String ,Integer> allUriMap = null;
 	
 	public Status(){
-		//System.out.println("Status!!!!!!!!!!!!!!!!!!!!!!!!");
+		
 		traficCoute = TrafficCounter.getInstance();
 		bufHtml = new StringBuilder();
 		
@@ -35,7 +35,7 @@ public class Status {
 		bufHtml.append(  "<title>My first littel server</title> \r\n");
 		bufHtml.append(  "</head>\r\n"			);
 		bufHtml.append(  "<body> \r\n"			);
-		int activeConnection = traficCoute.getEctivConnect();
+		int activeConnection = traficCoute.getEctivConnect()-2;
 		int allReqvest = traficCoute.getNamberOfCounnect();
 		int equlReqvest = traficCoute.getNamberOfEqualCounnect();
 		bufHtml.append(  "<h3>The number of connections currently open : "+activeConnection+"</h3>\r\n"	);
@@ -157,7 +157,11 @@ public class Status {
 		}/*for(IpPerson persone: listOfPerson){*/
 		/*Close Tabel: 16 last Reqvest*/ 
 		bufHtml.append(  "</table>\r\n"	); 
-		
+		 
+		 /* 16 last Operation 
+			 * */
+		last16Operation();
+	
 		return null;
 	}
 	/**
@@ -173,44 +177,51 @@ public class Status {
 		return bufHtml;
 	}
 	
-	@SuppressWarnings("unused")
-	private void printInConsole(){
-		/**/
-		Console cnsl = System.console();
-	      
-	         
-			if(cnsl != null){
-	         
-	            String fmt = "%1$10s %2$10s %3$10s%n";
-	            int activeConnection = traficCoute.getEctivConnect();
-	    		int allReqvest = traficCoute.getNamberOfCounnect();
-	    		int equlReqvest = traficCoute.getNamberOfEqualCounnect();
-	            // format
-	            cnsl.printf(fmt, "activeConnection", "allReqvest", "equlReqvest");
-	            cnsl.printf(fmt, "-----", "-----", "-----");
-	            cnsl.printf(fmt, activeConnection, allReqvest, equlReqvest);
-	            
-	            
-	            String fmt2 = "%1$20s %2$25s %3$10s% %4$10s %5$10s %6$10s%sn";
-	            cnsl.printf(fmt2, "scr_Ip", "URL", "timestamp", "sent_bytes", "received_bytes","speed");
-	            cnsl.printf(fmt2, "-----", "-----", "-----","-----", "-----", "-----");
-	            listOfPerson = traficCoute.getListOfPerson();
-	    		int i = 0;
-	    		for(IpPerson persone: listOfPerson){
-	    			
-	    			String scr_Ip = persone.getScr_IP();
-	    			String URL = persone.getLastUri();
-	    			String timestamp = persone.getLastDate();
-	    			int sent_bytes = persone.getSent_bytes();
-	    			int received_bytes = persone.getIntreceived_bytes();
-	    			double speed = persone.getSpeed();
-	            	cnsl.printf(fmt2, scr_Ip, URL, timestamp,sent_bytes,received_bytes,received_bytes,speed);
-	    			if(i == 16) break;
-	    			i++;
-	            	           
-	    			}  
-	      
-	         }
+
+	private void last16Operation(){
+		/* 16 last Operation getLastOperation
+		 * */
+		
+		bufHtml.append(  "<h3>16 Last processed Operation</h3>\r\n"	);
+		bufHtml.append(  "<table class=brd  border=1>\r\n"		);
+		bufHtml.append(  "<tr>\r\n"								);
+		
+		bufHtml.append(  "<th>scr_Ip</th>\r\n"					);
+		bufHtml.append(  "<th>URL</th>\r\n"						);
+		bufHtml.append(  "<th>timestamp</th>\r\n"				);
+		bufHtml.append(  "<th>sent_bytes</th>\r\n"				);
+		bufHtml.append(  "<th>received_bytes</th>\r\n"			);
+		bufHtml.append(  "<th>speed (bytes/sec)</th>\r\n"		);
+		
+		bufHtml.append(  "</tr>\r\n"							);
+		/*Info in tabel
+		* */
+		listOfPerson = (traficCoute.getLastOperation());
+		for(IpPerson persone: listOfPerson){
+			
+			String scr_Ip = persone.getScr_IP();
+			String URL = persone.getLastUri();
+			String timestamp = persone.getLastDate();
+			int sent_bytes = persone.getSent_bytes();
+			int received_bytes = persone.getIntreceived_bytes();
+			double speed = persone.getSpeed();
+			bufHtml.append(  "<tr>\r\n"								);
+			
+			bufHtml.append(  "<td>" + scr_Ip +"</td>\r\n "			);
+            bufHtml.append(  "<td>" + URL +"</td>\r\n "				);
+            bufHtml.append(  "<td>" + timestamp +"</td>\r\n "		);
+            bufHtml.append(  "<td>" + sent_bytes +"</td>\r\n "		);
+            bufHtml.append(  "<td>" + received_bytes +"</td>\r\n "	);
+            bufHtml.append(  "<td>" + speed +"</td>\r\n "			);
+			
+			bufHtml.append(  "</tr>\r\n"							);
+			
+			
+		}/*for(IpPerson persone: listOfPerson){*/
+		/*Close Tabel: 16 last Reqvest*/ 
+		bufHtml.append(  "</table>\r\n"	); 
+		
+		
 	    }
 	
 	

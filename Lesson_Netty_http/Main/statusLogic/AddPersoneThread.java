@@ -22,7 +22,7 @@ public class AddPersoneThread extends Thread {
 	 */
 	private int sent_bytes = 0; 
 	private int intreceived_bytes = 0; 
-	private int speed = 0;
+	private double speed = 0;
 	/*
 	 * Data counter 
 	 */
@@ -38,7 +38,7 @@ public class AddPersoneThread extends Thread {
 	 * @param speed
 	 * @param lastDate
 	 */
-	public AddPersoneThread(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,int speed,String lastDate){
+	public AddPersoneThread(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,double speed,String lastDate){
 		traficCoute = TrafficCounter.getInstance();
 		this.scr_IP = scr_IP;
 		this.url = uri;

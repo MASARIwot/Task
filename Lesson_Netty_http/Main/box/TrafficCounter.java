@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TrafficCounter  {
 	/*Namber off Active connect
 	 * */
-	private int activConnect = 0;
+	private static int activConnect = 0;
 	private volatile int reqvestCounter = 0;
 	private int reqvestEqvalCounter = 0;
 	
@@ -24,6 +24,10 @@ public class TrafficCounter  {
 	 *(@see) IpPerson
 	 * */
 	private  List<IpPerson> listOfPerson =  new ArrayList<IpPerson>();
+	/*ArrayList for Last 16 operation
+	 *(@see) IpPerson
+	 * */
+	private  List<IpPerson> lastOperation =  new ArrayList<IpPerson>(16);
 	/*
 	 * for ReenTrantlock
 	 * */
@@ -56,19 +60,23 @@ public class TrafficCounter  {
 	 * If sach person exist he will modify his information
 	 * @see IpPerson
 	 */
-	public  void  addPersone(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,int speed,String lastDate){
+	public  void  addPersone(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,double speed,String lastDate){
 		lock.lock();try{
+			
 		if(listOfPerson.size() == 0){
 			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate)); 
 			addEqualCounter();
 			addCount();
+			/*Save last 16 operation*/
+			setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));
 			}
 		for(int i = 0; i < listOfPerson.size(); i++ ){
 			if( !(listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
 			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate));	
 			addEqualCounter();
 			addCount();
-			
+			/*Save last 16 operation*/
+			setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));			
 			}else if( (listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
 				listOfPerson.get(i).setIntreceived_bytes(intreceived_bytes);
 				listOfPerson.get(i).setLastDate(lastDate);
@@ -76,7 +84,9 @@ public class TrafficCounter  {
 				listOfPerson.get(i).setReqvestCounter();
 				listOfPerson.get(i).setSent_bytes(sent_bytes);
 				listOfPerson.get(i).setSpeed(speed);
-				addCount();		
+				addCount();
+				/*Save last 16 operation*/
+				setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));
 			}/*else*/
 		}/*For*/
 	// System.out.println(listOfPerson.toString());
@@ -85,6 +95,25 @@ public class TrafficCounter  {
 			 
 			}
 	}/*addPersone*/
+	
+	/**
+	 * 
+	 * @return  List<IpPerson> of last 16 operation
+	 */
+	public List<IpPerson> getLastOperation() {
+		lock.lock();try{return Collections.unmodifiableList(this.lastOperation);
+		}finally{lock.unlock();}
+	}
+	/**
+	 * this method save last 16 operation
+	 * @param lastOperation the lastOperation to set
+	 */
+	private void setLastOperation(IpPerson newPersone) {
+			if(lastOperation.size() > 15)
+	    	lastOperation.remove(0);
+	    	lastOperation.add(newPersone);
+	    	
+	}
 	/**
 	 * 
 	 * @return unmodifiableList List<IpPerson>
@@ -106,14 +135,14 @@ public class TrafficCounter  {
 	 * ADD work Connection
 	 */
 	public void Offconnect() {
-		lock.lock();try{this.activConnect--;
+		lock.lock();try{activConnect--;
 		}finally{lock.unlock();}
 	}
 	/**
 	 *Off conection
 	 */
 	public void Addconnect() {
-		lock.lock();try{this.activConnect++;
+		lock.lock();try{activConnect++ ;
 		}finally{lock.unlock();}
 	}
 	/**

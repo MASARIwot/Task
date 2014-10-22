@@ -1,5 +1,6 @@
 package serverNetty;
 
+
 import java.util.Date;
 
 import statusLogic.AddPersoneThread;
@@ -19,7 +20,7 @@ import static io.netty.handler.codec.http.HttpVersion.*;//HTTP_1_1
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;//LOCATION
 /**
  * this if main Handler
- * @author Ã‘Ã Ã­Ã¿
+ * @author Ñàíÿ
  */
 public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleChannelInboundHandler<FullHttpRequest>{*/
 	TrafficCounter traficCoute = TrafficCounter.getInstance();
@@ -37,7 +38,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
 	 */
 	private int sent_bytes = 0; 
 	private int intreceived_bytes = 0; 
-	private int speed;
+	private double speed;
 	/*
 	 * Data counter 
 	 */
@@ -51,7 +52,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
       @Override
      public void channelReadComplete(ChannelHandlerContext ctx) {
     	  /*ADD last Write Time*/
-    	  traficCoute.Offconnect();
+    	  
     	  this.lastWriteTime = System.currentTimeMillis();
     	  calculateSpeed();
     	  /*ADD persone in new Tread*/
@@ -60,7 +61,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
 		    	  addIfo = new AddPersoneThread(this.scr_IP, this.url, this.sent_bytes, this.intreceived_bytes, this.speed, this.lastDate);
 		    	  addIfo.start();  
 		    	 }
-    	 
+		    	  traficCoute.Offconnect();
           ctx.flush();
       }/*channelReadComplete*/
       
@@ -92,15 +93,17 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
         	String urlIn = req.getUri();
      		  		         		 
       		if("/hello".equals(urlIn)){
+      			this.url = "/hello";
       			printhelloWorld(ctx);
       		}/*if /hello*/ 
       		if("/status".equals(urlIn)){
+      			this.url = "/status";
       			status(ctx);
       		
       		}/*if /status*/ 
       		if(urlIn.startsWith("/redirect?url=")){
       			String[] parts = urlIn.split("url=");
-    			String part2 = parts[1]; // =<url>
+      			String part2 = parts[1]; // =<url>
       			this.url = part2;
       			/*ADD url*/
       			//System.out.println("Redirect url:" + this.url);
@@ -207,9 +210,11 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter { /* SimpleC
        */
       private void calculateSpeed(){
     	  try{
-    	 this.speed =  this.sent_bytes + this.intreceived_bytes;
-    	 this.speed = (int) (this.speed/((this.lastWriteTime - this.currentTime)));
-    	 this.speed = this.speed*1000;
+    		  	  
+    		  this.speed =  this.sent_bytes + this.intreceived_bytes;
+    		  this.speed =  (this.speed/((this.lastWriteTime - this.currentTime)));
+    	      this.speed =  (this.speed*1000);
+    	      
     	
     	  }catch(ArithmeticException e){
     		this.speed = 9;  
