@@ -4,7 +4,7 @@ package serverNetty;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-
+//import box.TrafficCounter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
@@ -44,16 +44,22 @@ public class NttpServerMain {
 	 * About the outcome or status of I / O operations. 
 	 * */
 	ChannelFuture channelsFuture = null;
-	private TestTreadForServer testThred = null;
 	private int PORT = 0; 
-	
+	/**
+	 * @param port - Port for server init.
+	 */
 	public NttpServerMain(int port){
 		this.PORT = port;
 		serverBoot = new ServerBootstrap();
 		bossGroup = new NioEventLoopGroup();
 		workerGroup = new NioEventLoopGroup();
 	} 
-	
+	/**
+	 * Server Configuration
+	 * @throws InterruptedException
+	 * @throws NoSuchProviderException
+	 * @throws NoSuchAlgorithmException
+	 */
 	public void configureServer() throws InterruptedException, NoSuchProviderException, NoSuchAlgorithmException{
 		try{
 		serverBoot.group(bossGroup, workerGroup)
@@ -62,12 +68,14 @@ public class NttpServerMain {
 				   is used to create an instance of the new channel, 
 						to accept incoming connections
 				   */
-				  .childHandler(new HttpServerInit()/*new ChannelInitializer<SocketChannel>() { // (4)
+				  .childHandler(new HttpServerInit()/*new ChannelInitializer<SocketChannel>() { 
 		                 @Override
 		                 public void initChannel(SocketChannel ch) throws Exception {
-		                     ch.pipeline().addLast(new HttpServerInit());
+		                     ch.pipeline().addLast(new {*********}());
 		                 }
-		             }*/);
+		             }*/
+				  	
+				  );//.localAddress("somedomain", PORT)/**/;
 		/*Bind and start to accept incoming connections. 
 			Here we connect with the port 8085 (int PORT) all NICs (network cards) for a PC. 
 			Now you can call the Bind () as many times as you want 
@@ -75,8 +83,6 @@ public class NttpServerMain {
 		 */
 		 
 		channelsFuture = serverBoot.bind(PORT).sync();
-		testThred = new TestTreadForServer(channelsFuture);
-		testThred.start();
 		/*sync()::-Waits for this future until it is done, 
 		 * and throws(InterruptedException) if the future failed.
 		 * */
@@ -92,10 +98,38 @@ public class NttpServerMain {
 			bossGroup.shutdownGracefully();
 			if(workerGroup != null)
 			workerGroup.shutdownGracefully();
+//			workerGroup.shutdownGracefully().awaitUninterruptibly(10, TimeUnit.SECONDS);
+//          bossGroup.shutdownGracefully().awaitUninterruptibly(10, TimeUnit.SECONDS);
 			
 		}
-	}
+	}/*configureServer END*/
+	
+	public static void startServer(int PORT){
+		final int port = PORT;
+
+		 /*Start Server*/
+		 Thread myThready = new Thread(new Runnable()
+	        {
+	            public void run() 
+	            {
+	            	try {
+						new NttpServerMain(port).configureServer();
+					} catch (NoSuchProviderException e) {
+						
+						e.printStackTrace();
+					} catch (NoSuchAlgorithmException e) {
+						
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						
+						e.printStackTrace();
+					}
+	            }
+	        });
+	        myThready.start();	//Запуск потока
 		
+	}
+	
 	public static void main(String args[]) throws InterruptedException, NoSuchProviderException, NoSuchAlgorithmException {
 		/*init PORT*/
 		int port;
@@ -104,13 +138,11 @@ public class NttpServerMain {
         } else {
             port = 8085;
         }
-		try {
-			/*Start Server*/
-			new NttpServerMain(port).configureServer();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			throw new InterruptedException();
-		}
-	}/*Main*/
+		/*Start Port*/
+       // new NttpServerMain(port).configureServer();
+        startServer(port);
+		
+		
+	}/*Main END*/
 
-}/*NttpServerMain.class*/
+}/*NttpServerMain.class END*/

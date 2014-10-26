@@ -33,35 +33,14 @@ public class TestServer {
     		"http://127.0.0.1:8085/redirect?url=http://google.ua/",
     		"http://127.0.0.1:8085/redirect?url=http://facebook.com"};
 	
-    
-    @Ignore 
-    @Test
-	public void test2() {
-    	for(int i = 0; i < redirect.length; i++ ){
-    		 aggPers(redirect[i]);
-		}
-    	System.out.print(lastOperation.toString());
-        	
-    }
-    public void aggPers(String str){
-    	if(lastOperation.size() > 4){
-    	lastOperation.remove(0);
-    	lastOperation.add(str);}else lastOperation.add(str);
-    	
-    }
-    
-    
-    
-  
+     
 	@Test
 	public void test() throws InterruptedException {
 		float startTime =  System.currentTimeMillis();
 		
 		TestThread_Hello testHello = null;
-		
 		TestThread_Redirect testRedirect = null;
-		
-		
+			
 		for(int i = 0; i < redirect.length; i++ ){
 			testRedirect = new TestThread_Redirect(redirect[i]);
 			testRedirect.start();

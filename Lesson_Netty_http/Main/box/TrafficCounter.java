@@ -16,8 +16,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TrafficCounter  {
 	/*Namber off Active connect
 	 * */
-	private static int activConnect = 0;
+	private volatile static  int activConnect = 0;
+	/*All reqves*/
 	private volatile int reqvestCounter = 0;
+	/*For diferent IP*/
 	private int reqvestEqvalCounter = 0;
 	
 	/*ArrayList for save IpPerson information
@@ -62,38 +64,34 @@ public class TrafficCounter  {
 	 */
 	public  void  addPersone(String scr_IP,String uri,int sent_bytes,int intreceived_bytes,double speed,String lastDate){
 		lock.lock();try{
-			
 		if(listOfPerson.size() == 0){
 			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate)); 
 			addEqualCounter();
 			addCount();
 			/*Save last 16 operation*/
 			setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));
-			}
-		for(int i = 0; i < listOfPerson.size(); i++ ){
-			if( !(listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
-			listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate));	
-			addEqualCounter();
-			addCount();
-			/*Save last 16 operation*/
-			setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));			
-			}else if( (listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
-				listOfPerson.get(i).setIntreceived_bytes(intreceived_bytes);
-				listOfPerson.get(i).setLastDate(lastDate);
-				listOfPerson.get(i).setLastUri(uri);
-				listOfPerson.get(i).setReqvestCounter();
-				listOfPerson.get(i).setSent_bytes(sent_bytes);
-				listOfPerson.get(i).setSpeed(speed);
-				addCount();
-				/*Save last 16 operation*/
-				setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));
-			}/*else*/
-		}/*For*/
-	// System.out.println(listOfPerson.toString());
-		}finally{
-			lock.unlock();
-			 
-			}
+			}else if(listOfPerson.size() != 0) {
+					for(int i = 0; i < listOfPerson.size(); i++ ){
+						if( !(listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
+						listOfPerson.add(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed,lastDate));	
+						addEqualCounter();
+						addCount();
+						/*Save last 16 operation*/
+						setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));			
+						}else if( (listOfPerson.get(i).getScr_IP()).equals(scr_IP)){
+							listOfPerson.get(i).setIntreceived_bytes(intreceived_bytes);
+							listOfPerson.get(i).setLastDate(lastDate);
+							listOfPerson.get(i).setLastUri(uri);
+							listOfPerson.get(i).setReqvestCounter();
+							listOfPerson.get(i).setSent_bytes(sent_bytes);
+							listOfPerson.get(i).setSpeed(speed);
+							addCount();
+							/*Save last 16 operation*/
+							setLastOperation(new IpPerson(scr_IP, uri, sent_bytes, intreceived_bytes, speed, lastDate));
+						}/*else*/
+					}/*For*/
+			}/*else if(listOfPerson.size() != 0)*/
+		}finally{lock.unlock();}
 	}/*addPersone*/
 	
 	/**
@@ -112,7 +110,6 @@ public class TrafficCounter  {
 			if(lastOperation.size() > 15)
 	    	lastOperation.remove(0);
 	    	lastOperation.add(newPersone);
-	    	
 	}
 	/**
 	 * 
@@ -122,7 +119,6 @@ public class TrafficCounter  {
 		lock.lock();try{return Collections.unmodifiableList(this.listOfPerson);
 		}finally{lock.unlock();}
 	}
-	
 	/**
 	 * @return the ectivConnect
 	 */
@@ -130,18 +126,17 @@ public class TrafficCounter  {
 		lock.lock();try{return activConnect;
 		}finally{lock.unlock();}
 	}
-
 	/**
 	 * ADD work Connection
 	 */
-	public void Offconnect() {
+	public static void Offconnect() {
 		lock.lock();try{activConnect--;
 		}finally{lock.unlock();}
 	}
 	/**
 	 *Off conection
 	 */
-	public void Addconnect() {
+	public static void Addconnect() {
 		lock.lock();try{activConnect++ ;
 		}finally{lock.unlock();}
 	}
@@ -166,14 +161,13 @@ public class TrafficCounter  {
 		lock.lock();try{this.reqvestCounter +=1;
 		}finally{lock.unlock();}
 	}
-	
-	/**
+    /**
 	 * @param add individual connection
 	 */
 	private void addEqualCounter() {
 		this.reqvestEqvalCounter++;
 	}
 	
+
 	
-	
-}
+}/*TrafficCounter END */

@@ -1,14 +1,12 @@
 package statusLogic;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
 import box.IpPerson;
 import box.TrafficCounter;
 /**
- * Class what create answer for ..../status
+ * Class what create answer for request:..../status
  * @author Саня
  *
  */
@@ -177,7 +175,9 @@ public class Status {
 		return bufHtml;
 	}
 	
-
+	/**
+	 * Create Table with last 16 processed operation
+	 */
 	private void last16Operation(){
 		/* 16 last Operation getLastOperation
 		 * */

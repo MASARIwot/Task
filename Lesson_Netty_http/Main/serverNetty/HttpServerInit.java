@@ -1,12 +1,18 @@
 package serverNetty;
 
+
+
+//import box.MyHttpRequestDecoder;
+//import box.MyHttpResponseEncoder;
 import box.TrafficCounter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.ssl.SslContext;
+
 
 /**
  * 
@@ -14,6 +20,7 @@ import io.netty.handler.ssl.SslContext;
  *
  */
 public class HttpServerInit extends ChannelInitializer<SocketChannel>{
+	//Timer timer = new HashedWheelTimer();
 	public static TrafficCounter traficCouteInServer = TrafficCounter.getInstance();
     /*(see)http://netty.io/4.0/api/io/netty/handler/ssl/SslContext.html
      * Safe socket implementation a protocol that acts
@@ -22,26 +29,25 @@ public class HttpServerInit extends ChannelInitializer<SocketChannel>{
      * */
 	private SslContext sslCtx;
 	
+		
 	public HttpServerInit(SslContext sslCtx){
 		this.sslCtx = sslCtx;
 		
 	}
 	public HttpServerInit(){
 		
-		
 	}
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
         if (sslCtx != null) {
-        //pipeline.addLast(sslCtx.newHandler(ch.alloc()));
+//        pipeline.addFirst(sslCtx.newHandler(ch.alloc()));
         }
-        //p.addLast(new SslHandler());
-        pipeline.addLast(new HttpRequestDecoder());
-	    pipeline.addLast(new HttpResponseEncoder());
-        //pipeline.addLast(new HttpResponseEncoder());
-        pipeline.addLast(new HttpServerHandler());
-        //pipeline.addLast(new *other*Handler());
+        pipeline.addLast("encoder",		new HttpResponseEncoder());
+        pipeline.addLast("decoder",		new HttpRequestDecoder());
+	    pipeline.addLast("aggregator",	new HttpObjectAggregator(1048576));
+        pipeline.addLast("handle",		new MyHttpServerHandler());
+
 		
 	}
 
