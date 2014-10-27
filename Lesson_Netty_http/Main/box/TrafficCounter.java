@@ -1,10 +1,17 @@
 package box;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+
 
 /**
  * @author Саня
@@ -93,9 +100,34 @@ public class TrafficCounter  {
 			}/*else if(listOfPerson.size() != 0)*/
 		}finally{lock.unlock();}
 	}/*addPersone*/
-	
 	/**
-	 * 
+	 * This method  serializ information in file
+	 * @param path to serializ Information in File
+	 * @throws IOException
+	 * @see box.IpPerson.class
+	 */
+	public void  serializInformation(String path) throws IOException {
+		lock.lock(); try ( ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream(path))){
+            out.writeObject(this.listOfPerson); 
+         System.out.println("\n Write in File Successful.Checkout your output file..\n" + path );
+		}finally{lock.unlock();}
+			
+	}
+	/**
+	 * This method read information from file to List<IpPerson> listOfPerson 
+	 * @param path path to DeSerializ Information from File
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @see box.IpPerson.class 
+	 */
+	@SuppressWarnings("unchecked")
+	public void  deSerializInformation(String path) throws IOException, ClassNotFoundException {
+		lock.lock(); try ( ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))){
+			this.listOfPerson = (ArrayList<IpPerson>) in.readObject();
+       	}finally{lock.unlock();}
+		
+	}
+	/**
 	 * @return  List<IpPerson> of last 16 operation
 	 */
 	public List<IpPerson> getLastOperation() {

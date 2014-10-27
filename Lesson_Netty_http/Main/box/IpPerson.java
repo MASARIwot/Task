@@ -1,5 +1,6 @@
 package box;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 //import java.util.HashSet;
@@ -7,7 +8,11 @@ import java.util.HashMap;
 
 
 
-public class IpPerson {
+public class IpPerson implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/*
 	 *Persone ID 
 	 */
