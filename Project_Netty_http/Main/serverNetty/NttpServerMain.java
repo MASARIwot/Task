@@ -51,8 +51,8 @@ public class NttpServerMain {
 	public NttpServerMain(int port){
 		this.PORT = port;
 		serverBoot = new ServerBootstrap();
-		bossGroup = new NioEventLoopGroup();
-		workerGroup = new NioEventLoopGroup();
+		bossGroup = new NioEventLoopGroup(100);
+		workerGroup = new NioEventLoopGroup(100);
 	} 
 	/**
 	 * Server Configuration
@@ -103,7 +103,10 @@ public class NttpServerMain {
 			
 		}
 	}/*configureServer END*/
-	
+	/**
+	 * Start server
+	 * @param PORT
+	 */
 	public static void startServer(int PORT){
 		final int port = PORT;
 

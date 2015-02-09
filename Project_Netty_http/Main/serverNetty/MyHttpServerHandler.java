@@ -64,7 +64,7 @@ public class MyHttpServerHandler extends ChannelInboundHandlerAdapter { /* Simpl
     	  calculateSpeed();
     	  /*ADD persone in new Tread*/
     	 
-		    	  if(!"/favicon.ico".equals(this.scr_IP)){
+    	  		if(!"/favicon.ico".equals(this.scr_IP)){
 		    		  if(!"def".equals(this.url)){
 		    	  addIfo = new AddPersoneThread(this.scr_IP, this.url, this.sent_bytes, this.intreceived_bytes, this.speed, this.lastDate);
 		    	  addIfo.start();  
@@ -99,6 +99,15 @@ public class MyHttpServerHandler extends ChannelInboundHandlerAdapter { /* Simpl
     	    	  
     	  if (msg instanceof HttpRequest) {
           HttpRequest req = (HttpRequest) msg;
+          	// Handle a bad request. Modife StanDart Rwqvest!!!!!
+//	         if (!req.getDecoderResult().isSuccess()) {
+//	        	  DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST,
+//	                      Unpooled.copiedBuffer("BAD_REQUEST", CharsetUtil.UTF_8));
+//	              response.headers().set(/*HttpHeaders.Names.*/CONTENT_TYPE, "text/html; charset=UTF-8");
+//	              response.headers().set(/*HttpHeaders.Names.*/CONTENT_LENGTH, response.content().readableBytes());
+//	              ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+//	              return;
+//	        }          
           
           	if(HttpHeaders.is100ContinueExpected(req)){
           		/*100 HttpResponseStatus.CONTINUE — сервер удовлетворён начальными сведениями о запросе, клиент может продолжать пересылать заголовки*/
